@@ -42,7 +42,8 @@ async function trackError(
   if (!isTrackingEnabled()) {
     return Promise.resolve();
   }
-
+  // Put the app version in the analytics log.
+  description = `Error in app version: ${config.appVersion}, ${description}`;
   const eventData = {
     send_to: config.trackingId,
     event_category: eventCategory,
