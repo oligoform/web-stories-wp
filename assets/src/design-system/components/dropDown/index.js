@@ -73,6 +73,7 @@ export const DropDown = ({
   ...rest
 }) => {
   const selectRef = useRef();
+  const menuRef = useRef();
 
   const { activeOption, isOpen, normalizedOptions } = useDropDown({
     options,
@@ -144,6 +145,7 @@ export const DropDown = ({
             onDismissMenu={handleDismissMenu}
             onMenuItemClick={handleMenuItemClick}
             options={normalizedOptions}
+            ref={menuRef}
             {...rest}
           />
         </Popup>
