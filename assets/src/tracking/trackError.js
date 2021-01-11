@@ -27,7 +27,8 @@ import track from './track';
  * @see https://developers.google.com/analytics/devguides/collection/ga4/exceptions
  *
  * @param {string} eventCategory The event category (e.g. 'editor'). GA defaults this to 'engagement'.
- * @param {string} [description] The error description of backtrack info.
+ * @param {string} [description] The extra description.
+ * @param {Object} [errorInfo] The error info objecta.
  * @param {boolean} [fatal] Report whether there is a fatal error.
  * @param {Object<*>} [additionalData] Additional event data to send.
  * @return {Promise<void>} Promise that always resolves.
@@ -36,14 +37,16 @@ import track from './track';
 async function trackError(
   eventCategory,
   description,
+  errorInfo = null,
   fatal = false,
   additionalData = {}
 ) {
   if (!isTrackingEnabled()) {
     return Promise.resolve();
   }
-  // Put the app version in the analytics log.
-  description = `Error in app version: ${config.appVersion}, ${description}`;
+  description = errorInfo
+    ? `${description}\n\n${errorInfo.componentName}\n${errorInfo.componentStack}`
+    : description;
   const eventData = {
     send_to: config.trackingId,
     event_category: eventCategory,
@@ -51,7 +54,6 @@ async function trackError(
     fatal,
     ...additionalData,
   };
-
   return track('exception', eventData);
 }
 
