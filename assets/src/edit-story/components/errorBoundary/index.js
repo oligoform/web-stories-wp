@@ -38,7 +38,7 @@ class ErrorBoundary extends Component {
 
   componentDidCatch(error, errorInfo) {
     this.setState({ error, errorInfo });
-    trackError('error', 'catch error', errorInfo);
+    trackError(error, errorInfo);
   }
 
   render() {
