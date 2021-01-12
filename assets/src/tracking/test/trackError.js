@@ -34,16 +34,32 @@ describe('trackError', () => {
     config.trackingAllowed = true;
     config.trackingEnabled = true;
     config.trackingId = 'UA-12345678-1';
+    const error = new Error('mock error');
+    const errorInfo = {
+      componentName: 'Test component',
+      componentStack: 'Mock stack',
+    };
 
     gtag.mockImplementationOnce((type, eventName, eventData) => {
       eventData.event_callback();
     });
-    const error = new Error('mock error');
     await trackError(error);
     expect(gtag).toHaveBeenCalledWith('event', 'exception', {
       send_to: 'UA-12345678-1',
       event_category: 'error',
       description: 'Error: mock error',
+      fatal: false,
+      event_callback: expect.any(Function),
+    });
+
+    gtag.mockImplementationOnce((type, eventName, eventData) => {
+      eventData.event_callback();
+    });
+    await trackError(error, errorInfo);
+    expect(gtag).toHaveBeenCalledWith('event', 'exception', {
+      send_to: 'UA-12345678-1',
+      event_category: 'error',
+      description: 'Error: mock error\n\nTest component\nMock stack',
       fatal: false,
       event_callback: expect.any(Function),
     });
