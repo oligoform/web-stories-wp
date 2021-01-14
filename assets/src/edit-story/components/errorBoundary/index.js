@@ -38,7 +38,10 @@ class ErrorBoundary extends Component {
 
   componentDidCatch(error, errorInfo) {
     this.setState({ error, errorInfo });
-    trackError(error, errorInfo);
+    const msg = errorInfo
+      ? `${error.message}\n\n${errorInfo.componentName}\n${errorInfo.componentStack}`
+      : error.message;
+    trackError('editor', msg, true);
   }
 
   render() {

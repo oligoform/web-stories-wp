@@ -27,31 +27,26 @@ import track from './track';
  *
  * @see https://developers.google.com/analytics/devguides/collection/ga4/exceptions
  *
- * @param {Error} error The error message.
- * @param {ErrorInfo} [errorInfo] The React info object.
+ * @param {string} errorCategory The error category label.
+ * @param {string} errorMessage The error message.
  * @param {boolean} [fatal] Report whether there is a fatal error.
  * @param {Object<*>} [additionalData] Additional event data to send.
  * @return {Promise<void>} Promise that always resolves.
  */
 //eslint-disable-next-line require-await
 async function trackError(
-  error,
-  errorInfo = null,
+  errorCategory,
+  errorMessage,
   fatal = false,
   additionalData = {}
 ) {
   if (!isTrackingEnabled()) {
     return Promise.resolve();
   }
-  const description = errorInfo
-    ? `${error.toString()}\n\n${errorInfo.componentName}\n${
-        errorInfo.componentStack
-      }`
-    : error.toString();
   const eventData = {
     send_to: config.trackingId,
-    event_category: 'error',
-    description,
+    event_category: errorCategory,
+    description: errorMessage,
     fatal,
     ...additionalData,
   };

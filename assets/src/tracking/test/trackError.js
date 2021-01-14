@@ -35,31 +35,15 @@ describe('trackError', () => {
     config.trackingEnabled = true;
     config.trackingId = 'UA-12345678-1';
     const error = new Error('mock error');
-    const errorInfo = {
-      componentName: 'Test component',
-      componentStack: 'Mock stack',
-    };
 
     gtag.mockImplementationOnce((type, eventName, eventData) => {
       eventData.event_callback();
     });
-    await trackError(error);
+    await trackError('error_cateogry', error.message);
     expect(gtag).toHaveBeenCalledWith('event', 'exception', {
       send_to: 'UA-12345678-1',
-      event_category: 'error',
-      description: 'Error: mock error',
-      fatal: false,
-      event_callback: expect.any(Function),
-    });
-
-    gtag.mockImplementationOnce((type, eventName, eventData) => {
-      eventData.event_callback();
-    });
-    await trackError(error, errorInfo);
-    expect(gtag).toHaveBeenCalledWith('event', 'exception', {
-      send_to: 'UA-12345678-1',
-      event_category: 'error',
-      description: 'Error: mock error\n\nTest component\nMock stack',
+      event_category: 'error_cateogry',
+      description: 'mock error',
       fatal: false,
       event_callback: expect.any(Function),
     });
@@ -68,7 +52,7 @@ describe('trackError', () => {
   it('does not push to dataLayer when tracking is disabled', async () => {
     config.trackingEnabled = false;
     const error = new Error('mock error');
-    await trackError(error);
+    await trackError('error_cateogry', error.message);
     expect(gtag).not.toHaveBeenCalled();
   });
 });
