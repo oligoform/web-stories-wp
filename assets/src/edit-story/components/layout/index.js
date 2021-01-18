@@ -40,6 +40,7 @@ import {
 import withOverlay from '../overlay/withOverlay';
 import { CanvasProvider } from '../../app/canvas';
 import { PrepublishChecklistProvider } from '../inspector/prepublish';
+import { HighlightsProvider } from '../../app/highlights';
 import LayoutProvider from '../../app/layout/layoutProvider';
 
 const Editor = withOverlay(styled.section.attrs({
@@ -76,17 +77,19 @@ function Layout() {
   return (
     <LayoutProvider>
       <PrepublishChecklistProvider>
-        <Editor zIndex={3}>
-          <CanvasProvider>
-            <Area area="lib">
-              <Library />
+        <HighlightsProvider>
+          <Editor zIndex={3}>
+            <CanvasProvider>
+              <Area area="lib">
+                <Library />
+              </Area>
+              <Workspace />
+            </CanvasProvider>
+            <Area area="metaboxes">
+              <MetaBoxes />
             </Area>
-            <Workspace />
-          </CanvasProvider>
-          <Area area="metaboxes">
-            <MetaBoxes />
-          </Area>
-        </Editor>
+          </Editor>
+        </HighlightsProvider>
       </PrepublishChecklistProvider>
     </LayoutProvider>
   );
